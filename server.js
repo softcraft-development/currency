@@ -34,6 +34,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 require('./routes.js')(app); // load our routes and pass in our app
 
 // launch ======================================================================
-app.listen(port);
-
-console.log('available at localhost:' + port);
+app.listen(port, ()=>{
+	console.log('available at localhost:' + port);
+});
