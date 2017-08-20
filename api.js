@@ -134,7 +134,7 @@ function promiseSymbol(requestData) {
 // then used the original request data in the response data.
 // v002 preserves this.
 function promiseFixer(requestData, base, symbols, date) {
-	return Promise.new((resolve, reject) => {
+	return new Promise((resolve, reject) => {
 		const url = getFixerUrl(base, symbols, date);
 
 		rest.get(url).on('complete', (error, response) => {
