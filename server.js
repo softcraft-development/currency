@@ -9,7 +9,7 @@ const errorhandler = require('errorhandler');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const app = express();
-const port = 8888;
+const port = process.env.PORT || 8888;
 
 app.use(function (req, res, next) {
 	res.header('Access-Control-Allow-Credentials', true);
