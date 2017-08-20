@@ -1,10 +1,22 @@
 var rest = require('restler');
 
+function isBaseMissing(data){
+	return typeof data.base === 'undefined' || data.base === '';
+}
+
+function isSymbolMissing(data){
+	return typeof data.symbol === 'undefined' || data.symbol === '';
+}
+
+function isAmountMissing(data){
+	return typeof data.amount === 'undefined' || data.amount === ''
+}
+
 var self = module.exports = {
 
 	ver001: (data, res, callback) => {
 
-		if (typeof data.base === 'undefined' || data.base === '') {
+		if (isBaseMissing(data)) {
 			self.sendResponse(res, 403, 'Please supply a base currency symbol');
 			return;
 		}
@@ -13,12 +25,12 @@ var self = module.exports = {
 
 		// var url = 'https://api.fixer.io/latest?symbols=' + data.symbol.from + ',' + data.symbol.to;
 
-		if (typeof data.symbol === 'undefined' || data.symbol === '') {
+		if (isSymbolMissing()) {
 			self.sendResponse(res, 403, 'Please supply a currency symbol to convert to');
 			return;
 		}
 
-		if (typeof data.amount === 'undefined' || data.amount === '') {
+		if (isAmountMissing(data)) {
 			self.sendResponse(res, 403, 'Please supply an amount to convert');
 			return;
 		}
