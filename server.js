@@ -5,7 +5,6 @@ http.globalAgent.maxSockets = 10600
 http.globalAgent.keepAlive = true
 
 //Set packages
-const errorhandler = require('errorhandler');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const app = express();
