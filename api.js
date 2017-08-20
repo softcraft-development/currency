@@ -141,7 +141,7 @@ var self = module.exports = {
 		rest.get(url).on('complete', function (err, response) {
 
 			if (response.statusCode == 200) {
-				var returns = buildResponseData();
+				var returns = buildResponseData(data, response);
 				self.sendResponse(res, 200, returns);
 			}
 			if (response.statusCode == NOT_AUTHORIZED.code) {
