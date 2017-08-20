@@ -32,6 +32,15 @@ const INVALID_DATE_TYPE = {
 	code: 403
 }
 
+function buildResponseData(data, response){
+	return {
+		base: data.base,
+		amount: data.amount,
+		results: self.convertAmount(data.amount, JSON.parse(response.rawEncoded)),
+		dated: data.date
+	};
+}
+
 function isBaseMissing(data) {
 	return typeof data.base === 'undefined' || data.base === '';
 }
@@ -44,7 +53,7 @@ function isAmountMissing(data) {
 	return typeof data.amount === 'undefined' || data.amount === ''
 }
 
-function isDateProvided(data){
+function isDateProvided(data) {
 	return typeof data.date !== 'undefined';
 }
 
@@ -123,14 +132,7 @@ var self = module.exports = {
 		rest.get(url).on('complete', function (err, response) {
 
 			if (response.statusCode == 200) {
-
-				var returns = {
-					base: data.base,
-					amount: data.amount,
-					results: self.convertAmount(data.amount, JSON.parse(response.rawEncoded)),
-					dated: data.date
-				};
-
+				var returns = buildResponseData();
 				self.sendResponse(res, 200, returns);
 			}
 			if (response.statusCode == 401) {
