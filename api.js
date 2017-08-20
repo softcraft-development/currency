@@ -47,7 +47,7 @@ function isDateNotAString(data) {
 	return typeof data.date !== 'string';
 }
 
-function normalizeDate(data) {
+function normalizeBase(data) {
 	var base = data.base.toUpperCase();
 	return base;
 }
