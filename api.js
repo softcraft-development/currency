@@ -78,6 +78,10 @@ function normalizeSymbols(data) {
 	return symbols;
 }
 
+function getFixerUrl(base, symbols, date) {
+	'http://api.fixer.io/' + date + '?base=' + base + '&symbols=' + symbols;
+}
+
 var self = module.exports = {
 
 	ver001: (data, res, callback) => {
@@ -114,7 +118,7 @@ var self = module.exports = {
 		}
 
 
-		var url = 'http://api.fixer.io/' + date + '?base=' + base + '&symbols=' + symbols;
+		var url = getFixerUrl(base, symbols, date);
 
 		rest.get(url).on('complete', function (err, response) {
 
