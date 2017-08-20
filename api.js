@@ -43,7 +43,7 @@ function isAmountMissing(data) {
 	return typeof data.amount === 'undefined' || data.amount === ''
 }
 
-function isDateAString(data) {
+function isDateNotAString(data) {
 	return typeof data.date !== 'string';
 }
 
@@ -55,7 +55,7 @@ function normalizeDate(data) {
 function normalizeDate(data, onError) {
 	var date;
 	if (typeof data.date !== 'undefined') {
-		if (isDateAString(data)) {
+		if (isDateNotAString(data)) {
 			onError();
 			return;
 		}
