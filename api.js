@@ -107,6 +107,13 @@ function normalizeSymbols(data) {
 // type in the function declaration, making this sort of prefixing unnecessary.
 // 
 // Alternately: use async/await in ES7
+function promiseAmount(requestData){
+	if(isAmountMissing(requestData)){
+		return Promise.reject(MISSING_AMOUNT);
+	}
+	return Promise.resolve(requestData.amount);
+}
+
 function promiseBase(requestData) {
 	if (isBaseMissing(requestData)) {
 		return Promise.reject(MISSING_BASE);
@@ -218,13 +225,20 @@ var self = module.exports = {
 
 	},
 
-	v002: (requestData, response) => {
+	ver002: (requestData, response) => {
 		const basePromise = promiseBase(requestData);
 		const symbolPromise = promiseSymbol(requestData);
 		const datePromise = promiseDate(requestData);
+		const amountPromise = promiseAmount(requestData);
 
-		Promise.all([basePromise, symbolPromise, datePromise]).then(([base, symbols, date]) => {
-			return promiseFixer(base, symbols, date).then((responseData) => {
+		Promise.all([basePromise, symbolPromise, datePromise, amountPromise]).then(([base, symbols, date]) => {
+			// Note that the result of the amount promise is not actually used,
+			// as we're reusing the code out of ver001 for constructing 
+			// the response data, which pulls the data straight off the request.
+			// This is less than ideal since it doesn't allow for any normalization
+			// of the request data.
+			// TODO: refactor how we construct our response data.
+			return promiseFixer(requestData, base, symbols, date).then((responseData) => {
 				self.sendResponse(response, 200, responseData);
 			});
 		}).catch((error) => {
