@@ -1,5 +1,26 @@
 var rest = require('restler');
 
+
+const MISSING_BASE = {
+	message: 'Please supply a base currency symbol',
+	code: 403
+};
+
+const MISSING_SYMBOL = {
+	message: 'Please supply a currency symbol to convert to',
+	code: 403
+};
+
+const MISSING_AMOUNT = {
+	message: 'Please supply an amount to convert',
+	code: 403
+};
+
+const INVALID_DATE_TYPE= {
+	message: 'Please provide the date as a string',
+	code: 403
+}
+
 function isBaseMissing(data){
 	return typeof data.base === 'undefined' || data.base === '';
 }
@@ -12,12 +33,16 @@ function isAmountMissing(data){
 	return typeof data.amount === 'undefined' || data.amount === ''
 }
 
+function isDateAString(data){
+	return typeof data.date !== 'string';
+}
+
 var self = module.exports = {
 
 	ver001: (data, res, callback) => {
 
 		if (isBaseMissing(data)) {
-			self.sendResponse(res, 403, 'Please supply a base currency symbol');
+			self.sendResponse(res, MISSING_BASE.code, MISSING_BASE.message);
 			return;
 		}
 
@@ -25,13 +50,13 @@ var self = module.exports = {
 
 		// var url = 'https://api.fixer.io/latest?symbols=' + data.symbol.from + ',' + data.symbol.to;
 
-		if (isSymbolMissing()) {
-			self.sendResponse(res, 403, 'Please supply a currency symbol to convert to');
+		if (isSymbolMissing(data)) {
+			self.sendResponse(res, MISSING_SYMBOL.code, MISSING_SYMBOL.message);
 			return;
 		}
 
 		if (isAmountMissing(data)) {
-			self.sendResponse(res, 403, 'Please supply an amount to convert');
+			self.sendResponse(res, MISSING_AMOUNT.code, MISSING_AMOUNT.message);
 			return;
 		}
 
@@ -56,6 +81,7 @@ var self = module.exports = {
 		var date;
 		if (typeof data.date !== 'undefined') {
 			if (isDateAString(data)) {
+				self.sendResponse(res, INVALID_DATE_TYPE.code, INVALID_DATE_TYPE.message);
 				return;
 			}
 			date = data.date;
