@@ -14,5 +14,8 @@
     "express": "^4.14.1",
     "helmet": "^3.4.0",
     "restler": "^3.4.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.5.0"
   }
 }
