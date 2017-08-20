@@ -47,6 +47,12 @@ const NOT_AUTHORIZED = {
 	code: 401
 };
 
+// We'll stick with HTTP 403 for consistency
+const TOO_EARLY_DATE = {
+	message: 'Date must be on or after 2000-01-01',
+	code: 403
+};
+
 function buildResponseData(data, response) {
 	return {
 		base: data.base,
@@ -139,6 +145,9 @@ function promiseDate(requestData) {
 	const parsedDate = Date.parse(requestData.date);
 	if (isNaN(parsedDate)) {
 		return Promise.reject(INVALID_DATE_VALUE);
+	}
+	if (parsedDate < new Date(2000, 1, 1)) {
+		return Promise.reject(TOO_EARLY_DATE);
 	}
 	return Promise.resolve(requestData.date);
 }
