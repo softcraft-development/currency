@@ -23,6 +23,7 @@ var self = module.exports = {
 			return;
 		}
 
+		var symbols;
 		if (typeof data.symbol === 'object') {
 
 			var str = '';
@@ -32,22 +33,23 @@ var self = module.exports = {
 				str += symbolArray[i].toUpperCase() + ',';
 			}
 
-			var symbols = str;
+			symbols = str;
 
 		} else {
 
-			var symbols = data.symbol.toUpperCase();
+			symbols = data.symbol.toUpperCase();
 
 		}
 
+		var date;
 		if (typeof data.date !== 'undefined') {
 			if (typeof data.date !== 'string') {
 				self.sendResponse(res, 403, 'Please provide the date as a string');
 				return;
 			}
-			var date = data.date;
+			date = data.date;
 		} else {
-			var date = 'latest';
+			date = 'latest';
 		}
 
 		var url = 'http://api.fixer.io/' + date + '?base=' + base + '&symbols=' + symbols;
