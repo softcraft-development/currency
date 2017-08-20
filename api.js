@@ -52,27 +52,27 @@ var self = module.exports = {
 
 		var url = 'http://api.fixer.io/' + date + '?base=' + base + '&symbols=' + symbols;
 
-        rest.get(url).on('complete', function(err, response) {
+		rest.get(url).on('complete', function (err, response) {
 
-            if (response.statusCode == 200) {
+			if (response.statusCode == 200) {
 
-            	var returns = {
-            		base: data.base,
-            		amount: data.amount,
-            		results: self.convertAmount(data.amount, JSON.parse(response.rawEncoded)),
-            		dated: data.date
-            	};
+				var returns = {
+					base: data.base,
+					amount: data.amount,
+					results: self.convertAmount(data.amount, JSON.parse(response.rawEncoded)),
+					dated: data.date
+				};
 
-            	self.sendResponse(res, 200, returns);
-            }
-            if (response.statusCode == 401) {
-                callback('Not Authorized');
-            }
-            if (response.statusCode == 502) {
-                callback('API Error');
-            }
+				self.sendResponse(res, 200, returns);
+			}
+			if (response.statusCode == 401) {
+				callback('Not Authorized');
+			}
+			if (response.statusCode == 502) {
+				callback('API Error');
+			}
 
-        });
+		});
 
 	},
 
@@ -86,7 +86,7 @@ var self = module.exports = {
 			if (rates.hasOwnProperty(r)) {
 
 				var convert = (amount * rates[r]);
-				returns.push({from: data.base, to: r, roundedResult: convert.toFixed(2), fullResult: convert, rate: rates[r]})
+				returns.push({ from: data.base, to: r, roundedResult: convert.toFixed(2), fullResult: convert, rate: rates[r] })
 
 			}
 
@@ -97,13 +97,13 @@ var self = module.exports = {
 
 	sendResponse: (res, status, response) => {
 
-        if(typeof response === 'object'){
-            response = JSON.stringify(response);
-        }
-	    res.status(status);
-	    res.write(response);
-	    res.end();
-	    return
+		if (typeof response === 'object') {
+			response = JSON.stringify(response);
+		}
+		res.status(status);
+		res.write(response);
+		res.end();
+		return
 
 	}
 }
