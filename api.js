@@ -37,6 +37,20 @@ function isDateAString(data) {
 	return typeof data.date !== 'string';
 }
 
+function normalizeDate(data, onError) {
+	var date;
+	if (typeof data.date !== 'undefined') {
+		if (isDateAString(data)) {
+			onError();
+			return;
+		}
+		date = data.date;
+	} else {
+		date = 'latest';
+	}
+	return date;
+}
+
 function normalizeSymbols(data) {
 	var symbols;
 	if (typeof data.symbol === 'object') {
@@ -82,17 +96,9 @@ var self = module.exports = {
 		}
 
 		const symbols = normalizeSymbols(data);
-
-		var date;
-		if (typeof data.date !== 'undefined') {
-			if (isDateAString(data)) {
-				self.sendResponse(res, INVALID_DATE_TYPE.code, INVALID_DATE_TYPE.message);
-				return;
-			}
-			date = data.date;
-		} else {
-			date = 'latest';
-		}
+		const date = normalizeDate(data, () => {
+			self.sendResponse(res, INVALID_DATE_TYPE.code, INVALID_DATE_TYPE.message);
+		});
 
 		var url = 'http://api.fixer.io/' + date + '?base=' + base + '&symbols=' + symbols;
 
