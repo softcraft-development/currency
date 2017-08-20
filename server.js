@@ -5,12 +5,11 @@ http.globalAgent.maxSockets = 10600
 http.globalAgent.keepAlive = true
 
 //Set packages
-var errorhandler = require('errorhandler'),
-	bodyParser = require('body-parser'),
-	helmet = require('helmet'),
-
-	app = express();
-port = 8888;
+const errorhandler = require('errorhandler');
+const bodyParser = require('body-parser');
+const helmet = require('helmet');
+const app = express();
+const port = 8888;
 
 app.use(function (req, res, next) {
 	res.header('Access-Control-Allow-Credentials', true);
