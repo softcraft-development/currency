@@ -1,7 +1,15 @@
 var rest = require('restler');
 
+const API_ERROR = {
+	code: 502,
+	message: 'API Error'
+};
 const DEFAULT_DATE_CODE = 'latest';
 
+const INVALID_DATE_TYPE = {
+	message: 'Please provide the date as a string',
+	code: 403
+};
 // Note that these error codes should be HTTP 400 Bad Request
 // (or possibly HTTP 422 Unprocessable Entity). 
 // HTTP 403 Forbidden is defined for *authorization* failures,
@@ -27,12 +35,13 @@ const MISSING_AMOUNT = {
 	code: 403
 };
 
-const INVALID_DATE_TYPE = {
-	message: 'Please provide the date as a string',
-	code: 403
-}
+const NOT_AUTHORIZED = {
+	message: 'Not Authorized',
+	code: 401
+};
 
-function buildResponseData(data, response){
+
+function buildResponseData(data, response) {
 	return {
 		base: data.base,
 		amount: data.amount,
@@ -135,11 +144,11 @@ var self = module.exports = {
 				var returns = buildResponseData();
 				self.sendResponse(res, 200, returns);
 			}
-			if (response.statusCode == 401) {
-				callback('Not Authorized');
+			if (response.statusCode == NOT_AUTHORIZED.code) {
+				callback(NOT_AUTHORIZED.message);
 			}
-			if (response.statusCode == 502) {
-				callback('API Error');
+			if (response.statusCode == API_ERROR.code) {
+				callback(API_ERROR.message);
 			}
 
 		});
