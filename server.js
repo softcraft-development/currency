@@ -1,12 +1,13 @@
 const express = require('express');
 const http = require('http');
+const bodyParser = require('body-parser');
+const helmet = require('helmet');
 
 http.globalAgent.maxSockets = 10600
 http.globalAgent.keepAlive = true
 
 //Set packages
-const bodyParser = require('body-parser');
-const helmet = require('helmet');
+
 const app = express();
 const port = process.env.PORT || 8888;
 
