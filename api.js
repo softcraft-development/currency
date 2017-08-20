@@ -1,6 +1,16 @@
 var rest = require('restler');
 
 
+// Note that these error codes should be HTTP 400 Bad Request
+// (or possibly HTTP 422 Unprocessable Entity). 
+// HTTP 403 Forbidden is defined for *authorization* failures,
+// not request content / validation failures.
+// 
+// However: the goal of this exercise is to replicate the v001 API,
+// which has already defined that HTTP 403 is the validation error condition.
+// If a decision is made to fix the v002 API to use proper HTTP error codes,
+// then update the error codes in these data structures,
+// and retrofit the v001 API to use hard-coded 403s instead for legacy compatibility
 const MISSING_BASE = {
 	message: 'Please supply a base currency symbol',
 	code: 403
