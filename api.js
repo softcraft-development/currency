@@ -1,5 +1,6 @@
 var rest = require('restler');
 
+const DEFAULT_DATE_CODE = 'latest';
 
 // Note that these error codes should be HTTP 400 Bad Request
 // (or possibly HTTP 422 Unprocessable Entity). 
@@ -43,6 +44,10 @@ function isAmountMissing(data) {
 	return typeof data.amount === 'undefined' || data.amount === ''
 }
 
+function isDateProvided(data){
+	return typeof data.date !== 'undefined';
+}
+
 function isDateNotAString(data) {
 	return typeof data.date !== 'string';
 }
@@ -50,20 +55,6 @@ function isDateNotAString(data) {
 function normalizeBase(data) {
 	var base = data.base.toUpperCase();
 	return base;
-}
-
-function normalizeDate(data, onError) {
-	var date;
-	if (typeof data.date !== 'undefined') {
-		if (isDateNotAString(data)) {
-			onError(INVALID_DATE_TYPE);
-			return;
-		}
-		date = data.date;
-	} else {
-		date = 'latest';
-	}
-	return date;
 }
 
 function normalizeSymbols(data) {
@@ -111,9 +102,17 @@ var self = module.exports = {
 		}
 
 		const symbols = normalizeSymbols(data);
-		const date = normalizeDate(data, (errorData) => {
-			self.sendResponse(res, errorData.code, errorData.message);
-		});
+		var date;
+		if (isDateProvided(data)) {
+			if (isDateNotAString(data)) {
+				self.sendResponse(res, INVALID_DATE_TYPE.code, INVALID_DATE_TYPE.message);
+				return;
+			}
+			date = data.date;
+		} else {
+			date = DEFAULT_DATE_CODE;
+		}
+
 
 		var url = 'http://api.fixer.io/' + date + '?base=' + base + '&symbols=' + symbols;
 
