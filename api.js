@@ -146,7 +146,7 @@ function promiseDate(requestData) {
 	if (isNaN(parsedDate)) {
 		return Promise.reject(INVALID_DATE_VALUE);
 	}
-	if (parsedDate < new Date(2000, 1, 1)) {
+	if (parsedDate < new Date(2000, 0, 1)) {
 		return Promise.reject(TOO_EARLY_DATE);
 	}
 	return Promise.resolve(requestData.date);
