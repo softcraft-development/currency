@@ -1,5 +1,5 @@
-var express = require('express'),
-	http = require('http');
+const express = require('express');
+const http = require('http');
 
 http.globalAgent.maxSockets = 10600
 http.globalAgent.keepAlive = true
