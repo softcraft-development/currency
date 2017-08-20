@@ -16,7 +16,9 @@ router.get('/0.1', jsonParser, function(req, res){
 });
 
 router.post('/0.1/', jsonParser, function(req, res){
-    api.ver001(req.body, res);
+    api.ver001(req.body, res, (errorMessage)=>{
+		res.status(500).send("An internal server error occurred: " + errorMessage);
+	});
 });
 
 module.exports = router;

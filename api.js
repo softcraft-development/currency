@@ -2,7 +2,7 @@ var rest = require('restler');
 
 var self = module.exports = {
 
-	ver001: (data, res) => {
+	ver001: (data, res, callback) => {
 
 		if (typeof data.base === 'undefined' || data.base === '') {
 			self.sendResponse(res, 403, 'Please supply a base currency symbol');
