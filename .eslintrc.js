@@ -3,6 +3,9 @@ module.exports = {
     "env": {
         "node": true
     },
+    "globals": {
+        "Promise": true
+    },
     "parserOptions": {
         "ecmaVersion": 6,
         "sourceType": "module"
