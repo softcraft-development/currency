@@ -56,7 +56,7 @@ function normalizeDate(data, onError) {
 	var date;
 	if (typeof data.date !== 'undefined') {
 		if (isDateNotAString(data)) {
-			onError();
+			onError(INVALID_DATE_TYPE);
 			return;
 		}
 		date = data.date;
@@ -111,8 +111,8 @@ var self = module.exports = {
 		}
 
 		const symbols = normalizeSymbols(data);
-		const date = normalizeDate(data, () => {
-			self.sendResponse(res, INVALID_DATE_TYPE.code, INVALID_DATE_TYPE.message);
+		const date = normalizeDate(data, (errorData) => {
+			self.sendResponse(res, errorData.code, errorData.message);
 		});
 
 		var url = 'http://api.fixer.io/' + date + '?base=' + base + '&symbols=' + symbols;
