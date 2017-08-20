@@ -11,7 +11,7 @@ router.use(function (req, res, next) {
 });
 
 router.get('/0.1', jsonParser, function(req, res){
-    res.status(200).send('This route is not available');
+    res.status(404).send('This route is not available');
     res.end();
 });
 
