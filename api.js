@@ -55,8 +55,7 @@ var self = module.exports = {
 
 		var date;
 		if (typeof data.date !== 'undefined') {
-			if (typeof data.date !== 'string') {
-				self.sendResponse(res, 403, 'Please provide the date as a string');
+			if (isDateAString(data)) {
 				return;
 			}
 			date = data.date;
