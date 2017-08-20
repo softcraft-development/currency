@@ -47,6 +47,11 @@ function isDateAString(data) {
 	return typeof data.date !== 'string';
 }
 
+function normalizeDate(data) {
+	var base = data.base.toUpperCase();
+	return base;
+}
+
 function normalizeDate(data, onError) {
 	var date;
 	if (typeof data.date !== 'undefined') {
@@ -91,7 +96,7 @@ var self = module.exports = {
 			return;
 		}
 
-		var base = data.base.toUpperCase();
+		const base = normalizeBase(data);
 
 		// var url = 'https://api.fixer.io/latest?symbols=' + data.symbol.from + ',' + data.symbol.to;
 
