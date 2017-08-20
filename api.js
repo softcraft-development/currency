@@ -40,7 +40,6 @@ const NOT_AUTHORIZED = {
 	code: 401
 };
 
-
 function buildResponseData(data, response) {
 	return {
 		base: data.base,
@@ -48,6 +47,10 @@ function buildResponseData(data, response) {
 		results: self.convertAmount(data.amount, JSON.parse(response.rawEncoded)),
 		dated: data.date
 	};
+}
+
+function getFixerUrl(base, symbols, date) {
+	return 'http://api.fixer.io/' + date + '?base=' + base + '&symbols=' + symbols;
 }
 
 function isBaseMissing(data) {
@@ -158,10 +161,6 @@ function promiseFixer(requestData, base, symbols, date) {
 			return;
 		});
 	});
-}
-
-function getFixerUrl(base, symbols, date) {
-	return 'http://api.fixer.io/' + date + '?base=' + base + '&symbols=' + symbols;
 }
 
 var self = module.exports = {
