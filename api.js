@@ -16,25 +16,46 @@ const MISSING_AMOUNT = {
 	code: 403
 };
 
-const INVALID_DATE_TYPE= {
+const INVALID_DATE_TYPE = {
 	message: 'Please provide the date as a string',
 	code: 403
 }
 
-function isBaseMissing(data){
+function isBaseMissing(data) {
 	return typeof data.base === 'undefined' || data.base === '';
 }
 
-function isSymbolMissing(data){
+function isSymbolMissing(data) {
 	return typeof data.symbol === 'undefined' || data.symbol === '';
 }
 
-function isAmountMissing(data){
+function isAmountMissing(data) {
 	return typeof data.amount === 'undefined' || data.amount === ''
 }
 
-function isDateAString(data){
+function isDateAString(data) {
 	return typeof data.date !== 'string';
+}
+
+function normalizeSymbols(data) {
+	var symbols;
+	if (typeof data.symbol === 'object') {
+
+		var str = '';
+		var symbolArray = data.symbol;
+
+		for (var i = symbolArray.length - 1; i >= 0; i--) {
+			str += symbolArray[i].toUpperCase() + ',';
+		}
+
+		symbols = str;
+
+	} else {
+
+		symbols = data.symbol.toUpperCase();
+
+	}
+	return symbols;
 }
 
 var self = module.exports = {
@@ -60,23 +81,7 @@ var self = module.exports = {
 			return;
 		}
 
-		var symbols;
-		if (typeof data.symbol === 'object') {
-
-			var str = '';
-			var symbolArray = data.symbol;
-
-			for (var i = symbolArray.length - 1; i >= 0; i--) {
-				str += symbolArray[i].toUpperCase() + ',';
-			}
-
-			symbols = str;
-
-		} else {
-
-			symbols = data.symbol.toUpperCase();
-
-		}
+		const symbols = normalizeSymbols(data);
 
 		var date;
 		if (typeof data.date !== 'undefined') {
