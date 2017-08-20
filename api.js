@@ -96,8 +96,72 @@ function normalizeSymbols(data) {
 	return symbols;
 }
 
+// A convention I like to use is to have any method that returns a Promise
+// to be prefixed with "promise". When interpreted as a verb, this function
+// means "I promise to return a symbol, or a reason why I can't".
+//
+// Alternately: when using TypeScript, you can explicitly specify the return 
+// type in the function declaration, making this sort of prefixing unnecessary.
+// 
+// Alternately: use async/await in ES7
+function promiseBase(requestData) {
+	if (isBaseMissing(requestData)) {
+		return Promise.reject(MISSING_BASE);
+	}
+	var base = normalizeBase(requestData);
+	return Promise.resolve(base)
+}
+
+function promiseDate(requestData) {
+	if (!isDateProvided(requestData)) {
+		return Promise.resolve(DEFAULT_DATE_CODE);
+	}
+	if (isDateNotAString(requestData)) {
+		return Promise.reject(INVALID_DATE_TYPE);
+	}
+	return Promise.resolve(requestData.date);
+}
+
+function promiseSymbol(requestData) {
+	if (isSymbolMissing(requestData)) {
+		return Promise.reject(MISSING_SYMBOL);
+	}
+	var symbol = normalizeSymbols(requestData);
+	return Promise.resolve(symbol)
+}
+
+// Note that v001 passed normalized data to Fixer but
+// then used the original request data in the response data.
+// v002 preserves this.
+function promiseFixer(requestData, base, symbols, date) {
+	return Promise.new((resolve, reject) => {
+		const url = getFixerUrl(base, symbols, date);
+
+		rest.get(url).on('complete', (error, response) => {
+			if (response.statusCode === 200) {
+				const responseData = buildResponseData(requestData, response);
+				resolve(responseData);
+				return;
+			}
+			if (response.statusCode == NOT_AUTHORIZED.code) {
+				reject(NOT_AUTHORIZED);
+				return;
+			}
+			if (response.statusCode == API_ERROR.code) {
+				reject(API_ERROR);
+				return;
+			}
+			reject({
+				code: 500,
+				message: "Unknown API status code"
+			})
+			return;
+		});
+	});
+}
+
 function getFixerUrl(base, symbols, date) {
-	'http://api.fixer.io/' + date + '?base=' + base + '&symbols=' + symbols;
+	return 'http://api.fixer.io/' + date + '?base=' + base + '&symbols=' + symbols;
 }
 
 var self = module.exports = {
@@ -153,6 +217,24 @@ var self = module.exports = {
 
 		});
 
+	},
+
+	v002: (requestData, response) => {
+		const basePromise = promiseBase(requestData);
+		const symbolPromise = promiseSymbol(requestData);
+		const datePromise = promiseDate(requestData);
+
+		Promise.all([basePromise, symbolPromise, datePromise]).then(([base, symbols, date]) => {
+			return promiseFixer(base, symbols, date).then((responseData) => {
+				self.sendResponse(response, 200, responseData);
+			});
+		}).catch((error) => {
+			if (error.code && error.message) {
+				self.sendResponse(response, error.code, error.message);
+				return;
+			}
+			self.sendResponse(response, 500, "Unknown error");
+		});
 	},
 
 	convertAmount: (amount, data) => {
