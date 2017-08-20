@@ -11,7 +11,7 @@ var self = module.exports = {
 
 		var base = data.base.toUpperCase();
 
-		var url = 'https://api.fixer.io/latest?symbols=' + data.symbol.from + ',' + data.symbol.to;
+		// var url = 'https://api.fixer.io/latest?symbols=' + data.symbol.from + ',' + data.symbol.to;
 
 		if (typeof data.symbol === 'undefined' || data.symbol === '') {
 			self.sendResponse(res, 403, 'Please supply a currency symbol to convert to');
