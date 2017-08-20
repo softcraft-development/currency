@@ -6,10 +6,6 @@ const API_ERROR = {
 };
 const DEFAULT_DATE_CODE = 'latest';
 
-const INVALID_DATE_TYPE = {
-	message: 'Please provide the date as a string',
-	code: 403
-};
 // Note that these error codes should be HTTP 400 Bad Request
 // (or possibly HTTP 422 Unprocessable Entity). 
 // HTTP 403 Forbidden is defined for *authorization* failures,
@@ -20,6 +16,17 @@ const INVALID_DATE_TYPE = {
 // If a decision is made to fix the v002 API to use proper HTTP error codes,
 // then update the error codes in these data structures,
 // and retrofit the v001 API to use hard-coded 403s instead for legacy compatibility
+const INVALID_DATE_TYPE = {
+	message: 'Please provide the date as a string',
+	code: 403
+};
+
+// We'll stick with HTTP 403 for consistency
+const INVALID_DATE_VALUE = {
+	message: 'Invalid date string',
+	code: 403
+};
+
 const MISSING_BASE = {
 	message: 'Please supply a base currency symbol',
 	code: 403
@@ -107,8 +114,8 @@ function normalizeSymbols(data) {
 // type in the function declaration, making this sort of prefixing unnecessary.
 // 
 // Alternately: use async/await in ES7
-function promiseAmount(requestData){
-	if(isAmountMissing(requestData)){
+function promiseAmount(requestData) {
+	if (isAmountMissing(requestData)) {
 		return Promise.reject(MISSING_AMOUNT);
 	}
 	return Promise.resolve(requestData.amount);
@@ -128,6 +135,10 @@ function promiseDate(requestData) {
 	}
 	if (isDateNotAString(requestData)) {
 		return Promise.reject(INVALID_DATE_TYPE);
+	}
+	const parsedDate = Date.parse(requestData.date);
+	if (isNaN(parsedDate)) {
+		return Promise.reject(INVALID_DATE_VALUE);
 	}
 	return Promise.resolve(requestData.date);
 }
